@@ -18,11 +18,11 @@ We build 3D Occluded Motion dataset (OcMotion) to reduce the gap between synthet
 
 #### Visualize 2D keypoints and bounding-box:
 ```
-python vis_OcMotion.py --dataset_dir 3DMPB  --output_dir output 
+python vis_OcMotion.py --dataset_dir PATH/TO/OcMotion  --output_dir output 
 ```
 #### Visualize 3D meshes:
 ```
-python vis_OcMotion.py --dataset_dir 3DMPB  --output_dir output --vis_smpl True
+python vis_OcMotion.py --dataset_dir PATH/TO/OcMotion  --output_dir output --vis_smpl True
 ```
 
 ## Citation
