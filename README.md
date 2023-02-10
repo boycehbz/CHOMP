@@ -1,6 +1,6 @@
 # CHOMP: Occluded Human Body Capture with Self-Supervised Spatial-Temporal Motion Prior
 
-Buzhen Huang, Yuan Shu, Jingyi Ju, Yangang Wang<br>
+[Buzhen Huang](http://www.buzhenhuang.com/), Yuan Shu, Jingyi Ju, [Yangang Wang](https://www.yangangwang.com/)<br>
 \[[Arxiv](https://arxiv.org/pdf/2207.05375.pdf)\]
 
 
