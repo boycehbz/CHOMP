@@ -130,3 +130,64 @@ def draw_mask(img, mask, thickness=3, color=(255, 0, 0)):
     edge = _get_edge(mask, thickness)
     img[edge > 0] = img[edge > 0] * 0.2 + canvas[edge > 0] * 0.8
     return img
+
+def surface_projection(vertices, faces, joint, extri, intri, image, viz=False):
+    """
+    @ vertices: N*3, mesh vertex
+    @ faces: N*3, mesh face
+    @ joint: N*3, joints
+    @ extri: 4*4, camera extrinsic
+    @ intri: 3*3, camera intrinsic
+    @ image: RGB image
+    @ viz: bool, visualization
+    """
+    im = np.ascontiguousarray(image.copy(), dtype=np.uint8)
+    h = im.shape[0]
+    # homogeneous
+    intri_ = np.insert(intri,3,values=0.,axis=1)
+    temp_v = np.insert(vertices,3,values=1.,axis=1).transpose((1,0))
+
+    # projection
+    out_point = np.dot(extri, temp_v)
+    dis = out_point[2]
+    out_point = (np.dot(intri_, out_point) / dis)[:-1]
+    out_point = (out_point.astype(np.int32)).transpose(1,0)
+    
+    # color
+    max = dis.max()
+    min = dis.min()
+    t = 255./(max-min)
+    color = (255, 255, 255)
+    
+    # draw mesh
+    for f in faces:
+        point = out_point[f]
+        im = cv2.polylines(im, [point], True, color, 1)
+    
+    # joints projection
+    temp_joint = np.insert(joint,3,values=1.,axis=1).transpose((1,0))
+    out_point = np.dot(extri, temp_joint)
+    dis = out_point[2]
+    out_point = (np.dot(intri_, out_point) / dis)[:-1].astype(np.int32)
+    out_point = out_point.transpose(1,0)
+
+    # # draw projected joints
+    # for i in range(len(out_point)):
+    #     im = cv2.circle(im, tuple(out_point[i]), int(h/100), (255,0,0),-1)
+
+    # visualization
+    if viz:
+        ratiox = 800/int(im.shape[0])
+        ratioy = 800/int(im.shape[1])
+        if ratiox < ratioy:
+            ratio = ratiox
+        else:
+            ratio = ratioy
+
+        cv2.namedWindow("mesh",0)
+        cv2.resizeWindow("mesh",int(im.shape[1]*ratio),int(im.shape[0]*ratio))
+        cv2.moveWindow("mesh",0,0)
+        cv2.imshow('mesh',im/255.)
+        cv2.waitKey()
+
+    return out_point, im

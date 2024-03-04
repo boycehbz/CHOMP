@@ -89,7 +89,11 @@ def vis_smpl_3d(dataset_dir='./3DMPB', output_dir='./output', vis_train=False, *
 
                 verts, joints = smpl(shape, pose, trans)
 
-                img = render.render_multiperson(verts.detach().cpu().numpy(), smpl.faces, extri[:3,:3], extri[:3,3], intri, img.copy(), viz=False)
+                is_render = True
+                if is_render:
+                    img = render.render_multiperson(verts.detach().cpu().numpy(), smpl.faces, extri[:3,:3], extri[:3,3], intri, img.copy(), viz=False)
+                else:
+                    _, img = surface_projection(verts.detach().cpu().numpy()[0], smpl.faces, joints.detach().cpu().numpy()[0], extri, intri, img, viz=True)
 
                 vis_img('img', img)
                 output_path = os.path.join(output_dir, 'vis_3d', img_path)
@@ -105,7 +109,8 @@ def main(vis_smpl=False, **kwargs):
     
 
 if __name__ == "__main__":
-    # sys.argv = ['', '--dataset_dir=//105.1.1.110/e/dataset_processed/OCMotion-public', '--output_dir=output', '--vis_train=True', '--vis_smpl=False']
+    # import sys
+    # sys.argv = ['', '--dataset_dir=/media/buzhenhuang/SSD/Human-Training-v3.12/OcMotion', '--output_dir=output', '--vis_train=True', '--vis_smpl=False']
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_dir', type=str, help='directory of dataset')
